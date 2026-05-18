@@ -2,4 +2,35 @@ self.east_wall[r1][c1] = 0  # Remove east wall of current
     
     def _choose_start_end(self):
         """Choose start and end positions (can be interior or edges)"""
+        if self.config.start_end_type == 'edges':
+            # Classic: Left edge to right edge
+            self.start = (random.randint(0, self.rows - 1), 0)
+            self.end = (random.randint(0, self.rows - 1), self.cols - 1)
+            
+            # Create openings on edges
+            if self.start[0] > 0:
+                self.north_wall[self.start[0]][0] = 0
+            if self.end[0] < self.rows - 1:
+                self.north_wall[self.end[0] + 1][self.end[1]] = 0
+        
+        elif self.config.start_end_type == 'interior':
+            # Challenging: Both inside the maze
+            self.start = (
+                random.randint(1, self.rows - 2),
+                random.randint(1, self.cols - 2)
+            )
+            self.end = (
+                random.randint(1, self.rows - 2),
+                random.randint(1, self.cols - 2)
+            )
+            
+            # Ensure start != end
+            while self.start == self.end:
+                self.end = (
+                    random.randint(1, self.rows - 2),
+                    random.randint(1, self.cols - 2)
+                )
+            
+            # Create openings for interior cells
+            self._create_openings_at_start_end()
       
