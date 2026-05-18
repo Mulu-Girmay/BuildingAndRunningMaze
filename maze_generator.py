@@ -33,4 +33,15 @@ self.east_wall[r1][c1] = 0  # Remove east wall of current
             
             # Create openings for interior cells
             self._create_openings_at_start_end()
+              def _create_openings_at_start_end(self):
+        """Break walls to allow entry/exit from interior positions"""
+        directions = ['north', 'south', 'east', 'west']
+        
+        # For start
+        for direction in random.sample(directions, 1):
+            self._break_wall_at(self.start[0], self.start[1], direction)
+        
+        # For end
+        for direction in random.sample(directions, 1):
+            self._break_wall_at(self.end[0], self.end[1], direction)
       
