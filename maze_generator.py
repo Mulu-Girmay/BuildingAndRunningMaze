@@ -44,4 +44,15 @@ self.east_wall[r1][c1] = 0  # Remove east wall of current
         # For end
         for direction in random.sample(directions, 1):
             self._break_wall_at(self.end[0], self.end[1], direction)
+
+ def _break_wall_at(self, row, col, direction):
+        """Break a specific wall at a cell"""
+        if direction == 'north' and row > 0:
+            self.north_wall[row][col] = 0
+        elif direction == 'south' and row < self.rows - 1:
+            self.north_wall[row + 1][col] = 0
+        elif direction == 'west' and col > 0:
+            self.east_wall[row][col - 1] = 0
+        elif direction == 'east' and col < self.cols - 1:
+            self.east_wall[row][col] = 0
       
