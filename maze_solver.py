@@ -108,4 +108,58 @@ class MazeSolver:
         else:
             return moves[0]
     
-         
+    def would_left_hand_rule_work(self):
+        """
+        BONUS: Check if left-hand rule would solve this maze.
+        Simulates the left-hand rule approach (wall-following).
+        Returns True if it reaches the exit, False if it gets stuck in an infinite cycle.
+        """
+        if not self.maze:
+            return False
+
+        # Directions: 0=North, 1=East, 2=South, 3=West
+        # Let's assume an initial direction facing South or East, or calculate based on open walls
+        current_row, current_col = self.start
+        direction = 2  # Default to facing South initially
+        
+        # Keep track of states to detect infinite loops: (row, col, direction)
+        seen_states = set()
+        
+        while (current_row, current_col) != self.end:
+            state = (current_row, current_col, direction)
+            if state in seen_states:
+                # If we are back at the same cell facing the same direction, we are in a loop!
+                return False
+            seen_states.add(state)
+            
+            # Left-hand rule priority order relative to current heading:
+            # 1. Turn Left
+            # 2. Go Straight
+            # 3. Turn Right
+            # 4. Turn Around (Dead End)
+            
+            moved = False
+            # Check relative directions from left to right
+            for turn in [-1, 0, 1, 2]:
+                next_dir = (direction + turn) % 4
+                
+                # Check if a move is possible in next_dir
+                possible_moves = self._get_available_moves(current_row, current_col)
+                
+                # Map direction integers to coordinate offsets
+                if next_dir == 0:    target = (current_row - 1, current_col)    # North
+                elif next_dir == 1:  target = (current_row, current_col + 1)    # East
+                elif next_dir == 2:  target = (current_row + 1, current_col)    # South
+                elif next_dir == 3:  target = (current_row, current_col - 1)    # West
+                
+                if target in possible_moves:
+                    current_row, current_col = target
+                    direction = next_dir
+                    moved = True
+                    break
+            
+            if not moved:
+                # Completely isolated cell box (shouldn't happen in a valid maze structural config)
+                return False
+                
+        return True
