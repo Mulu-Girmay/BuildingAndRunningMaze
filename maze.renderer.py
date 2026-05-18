@@ -22,3 +22,19 @@ class MazeRenderer:
                 Colors.RED, 
                 self.config.cell_size // 3
             )
+        pygame.display.flip()
+    
+    def draw_solving(self, screen, maze_data, solver_state):
+        """Draw maze during solving phase (red/blue dots)"""
+        self._draw_maze_base(screen, maze_data)
+        
+        # Draw solver state (red/blue dots)
+        if solver_state:
+            for (row, col), color in solver_state:
+                self._draw_circle(
+                    screen, row, col, 
+                    color, 
+                    self.config.cell_size // 3
+                )
+        
+        pygame.display.flip()
