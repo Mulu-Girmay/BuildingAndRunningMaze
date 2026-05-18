@@ -38,3 +38,8 @@ class MazeRenderer:
                 )
         
         pygame.display.flip()
+
+    def draw_idle(self, screen, maze_data):
+        """Draw maze in idle state (no mouse, no solver)"""
+        self._draw_maze_base(screen, maze_data)
+        pygame.display.flip()
