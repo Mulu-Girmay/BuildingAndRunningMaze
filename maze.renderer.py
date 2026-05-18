@@ -43,3 +43,55 @@ class MazeRenderer:
         """Draw maze in idle state (no mouse, no solver)"""
         self._draw_maze_base(screen, maze_data)
         pygame.display.flip()
+
+     def _draw_maze_base(self, screen, maze_data):
+        """Draw the complete maze structure (walls and start/end)"""
+        north_wall = maze_data['north_wall']
+        east_wall = maze_data['east_wall']
+        rows = maze_data['rows']
+        cols = maze_data['cols']
+        start = maze_data['start']
+        end = maze_data['end']
+        
+        screen.fill(Colors.BLACK)
+        cs = self.cell_size
+        
+        # Draw all cells (optimized with minimal operations)
+        for row in range(rows):
+            for col in range(cols):
+                x = col * cs
+                y = row * cs
+                
+                # Draw north wall
+                if north_wall[row][col]:
+                    pygame.draw.line(
+                        screen, Colors.WHITE,
+                        (x, y), (x + cs, y), 2
+                    )
+                
+                # Draw east wall
+                if east_wall[row][col]:
+                    pygame.draw.line(
+                        screen, Colors.WHITE,
+                        (x + cs, y), (x + cs, y + cs), 2
+                    )
+                
+                # Draw west wall (left edge of maze)
+                if col == 0:
+                    pygame.draw.line(
+                        screen, Colors.WHITE,
+                        (x, y), (x, y + cs), 2
+                    )
+                
+                # Draw south wall (bottom edge of maze)
+                if row == rows - 1:
+                    pygame.draw.line(
+                        screen, Colors.WHITE,
+                        (x, y + cs), (x + cs, y + cs), 2
+                    )
+        
+        # Draw start and end (green circles)
+        if start:
+            self._draw_circle(screen, start[0], start[1], Colors.GREEN, cs // 3)
+        if end:
+            self._draw_circle(screen, end[0], end[1], Colors.GREEN, cs // 3)
