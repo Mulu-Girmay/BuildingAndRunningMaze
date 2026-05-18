@@ -104,3 +104,15 @@ class MazeRenderer:
         center_y = row * cs + cs // 2
         pygame.draw.circle(screen, color, (center_x, center_y), radius)
     
+    def draw_text(self, screen, text, x, y, color=Colors.WHITE):
+        """Draw text overlay (for instructions)"""
+        font = pygame.font.Font(None, 36)
+        text_surface = font.render(text, True, color)
+        screen.blit(text_surface, (x, y))
+    
+    def clear_cache(self):
+        """Clear drawing cache (when maze changes)"""
+        self._wall_cache = {}
+        self._dirty = True
+
+    
