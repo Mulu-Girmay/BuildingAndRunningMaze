@@ -22,6 +22,7 @@ class MazeRenderer:
                 Colors.RED, 
                 self.config.cell_size // 3
             )
+        
         pygame.display.flip()
     
     def draw_solving(self, screen, maze_data, solver_state):
@@ -38,13 +39,13 @@ class MazeRenderer:
                 )
         
         pygame.display.flip()
-
+    
     def draw_idle(self, screen, maze_data):
         """Draw maze in idle state (no mouse, no solver)"""
         self._draw_maze_base(screen, maze_data)
         pygame.display.flip()
-
-     def _draw_maze_base(self, screen, maze_data):
+    
+    def _draw_maze_base(self, screen, maze_data):
         """Draw the complete maze structure (walls and start/end)"""
         north_wall = maze_data['north_wall']
         east_wall = maze_data['east_wall']
@@ -95,3 +96,11 @@ class MazeRenderer:
             self._draw_circle(screen, start[0], start[1], Colors.GREEN, cs // 3)
         if end:
             self._draw_circle(screen, end[0], end[1], Colors.GREEN, cs // 3)
+    
+    def _draw_circle(self, screen, row, col, color, radius):
+        """Draw a circle centered in a cell"""
+        cs = self.cell_size
+        center_x = col * cs + cs // 2
+        center_y = row * cs + cs // 2
+        pygame.draw.circle(screen, color, (center_x, center_y), radius)
+    
