@@ -61,4 +61,51 @@ class MazeSolver:
                 # Dead end - backtrack and mark (BLUE DOT)
                 dead_row, dead_col = self.solution_stack.pop()
                 yield ('dead_end', dead_row, dead_col)
+                
+                # No solution found
+        yield ('failed', None, None)
+    
+    def _get_available_moves(self, row, col):
+        """
+        Get all cells reachable from current cell
+        Checks north_wall and east_wall arrays
+        """
+        north_wall = self.maze['north_wall']
+        east_wall = self.maze['east_wall']
+        rows = self.maze['rows']
+        cols = self.maze['cols']
+        
+        moves = []
+        
+        # Check North (up)
+        if row > 0 and north_wall[row][col] == 0:
+            moves.append((row - 1, col))
+        
+        # Check South (down)
+        if row < rows - 1 and north_wall[row + 1][col] == 0:
+            moves.append((row + 1, col))
+        
+        # Check West (left)
+        if col > 0 and east_wall[row][col - 1] == 0:
+            moves.append((row, col - 1))
+        
+        # Check East (right)
+        if col < cols - 1 and east_wall[row][col] == 0:
+            moves.append((row, col + 1))
+        
+        return moves
+    
+    def _choose_move(self, moves):
+        """
+        Choose next move
+        Can be random or deterministic (for different solving styles)
+        """
+        if self.config.solver_strategy == 'random':
+            return random.choice(moves)
+        elif self.config.solver_strategy == 'prefer_right':
+            # Right-hand rule (for comparison with left-hand rule)
+            return moves[0]  # Simplified - would need direction tracking
+        else:
+            return moves[0]
+    
          
