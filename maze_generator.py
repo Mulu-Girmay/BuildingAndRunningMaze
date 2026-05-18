@@ -55,4 +55,23 @@ self.east_wall[r1][c1] = 0  # Remove east wall of current
             self.east_wall[row][col - 1] = 0
         elif direction == 'east' and col < self.cols - 1:
             self.east_wall[row][col] = 0
-      
+      def _add_cycles(self, probability=0.05):
+        """
+        BONUS: Randomly eat extra walls to create cycles
+        1 in 20 chance (5%) to create cycles that break the shoulder-to-wall rule
+        """
+        cycles_created = 0
+        
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if random.random() < probability:
+                    # Try to eat north wall
+                    if row > 0 and self.north_wall[row][col] == 1:
+                        self.north_wall[row][col] = 0
+                        cycles_created += 1
+                    # Try to eat east wall
+                    elif col < self.cols - 1 and self.east_wall[row][col] == 1:
+                        self.east_wall[row][col] = 0
+                        cycles_created += 1
+        
+        print(f"[Generator] Created {cycles_created} cycles (extra walls eaten)")
