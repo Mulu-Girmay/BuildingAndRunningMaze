@@ -53,7 +53,7 @@ class Difficulty:
 class MazeConfig:
     def __init__(self, difficulty='MEDIUM'):
         self.set_difficulty(difficulty)
-        self.start_end_type = 'interior'  # 'edges' or 'interior'  
+        self.start_end_type = 'edges'  # 'edges' or 'interior'
         self.solver_strategy = 'random'  # 'random', 'prefer_right', 'prefer_left'      
         self.show_instructions = True
         self.animation_enabled = True

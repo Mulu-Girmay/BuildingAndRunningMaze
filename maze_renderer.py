@@ -51,6 +51,7 @@ class MazeRenderer:
         east_wall = maze_data['east_wall']
         rows = maze_data['rows']
         cols = maze_data['cols']
+        start_end_type = maze_data.get('start_end_type', 'edges')
         start = maze_data['start']
         end = maze_data['end']
         
@@ -71,14 +72,32 @@ class MazeRenderer:
                     )
                 
                 # Draw east wall
-                if east_wall[row][col]:
+                draw_east_wall = east_wall[row][col]
+                if (
+                    start_end_type == 'edges'
+                    and end
+                    and col == cols - 1
+                    and row == end[0]
+                ):
+                    draw_east_wall = 0
+
+                if draw_east_wall:
                     pygame.draw.line(
                         screen, Colors.WHITE,
                         (x + cs, y), (x + cs, y + cs), 2
                     )
                 
                 # Draw west wall (left edge of maze)
-                if col == 0:
+                draw_west_wall = col == 0
+                if (
+                    start_end_type == 'edges'
+                    and start
+                    and col == 0
+                    and row == start[0]
+                ):
+                    draw_west_wall = False
+
+                if draw_west_wall:
                     pygame.draw.line(
                         screen, Colors.WHITE,
                         (x, y), (x, y + cs), 2

@@ -28,6 +28,7 @@ class MazeGenerator:
             'east_wall': self.east_wall,
             'rows': self.rows,
             'cols': self.cols,
+            'start_end_type': self.config.start_end_type,
             'start': getattr(self, 'start', None),
             'end': getattr(self, 'end', None)
         }
@@ -109,15 +110,9 @@ class MazeGenerator:
     def _choose_start_end(self):
         """Choose start and end positions (can be interior or edges)"""
         if self.config.start_end_type == 'edges':
-            # Classic: Left edge to right edge
+            # Classic assignment mode: left edge to right edge.
             self.start = (random.randint(0, self.rows - 1), 0)
             self.end = (random.randint(0, self.rows - 1), self.cols - 1)
-            
-            # Create openings on edges
-            if self.start[0] > 0:
-                self.north_wall[self.start[0]][0] = 0
-            if self.end[0] < self.rows - 1:
-                self.north_wall[self.end[0] + 1][self.end[1]] = 0
         
         elif self.config.start_end_type == 'interior':
             # Challenging: Both inside the maze

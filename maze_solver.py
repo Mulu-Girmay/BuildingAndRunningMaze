@@ -6,7 +6,7 @@
 import random
 
 class MazeSolver:
-    def init(self, config):
+    def __init__(self, config):
         self.config = config
         self.maze = None
         self.solver_visited = None

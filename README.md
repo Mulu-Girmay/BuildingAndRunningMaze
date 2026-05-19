@@ -1,97 +1,132 @@
-# 🐭 Maze Generator & Solver
+# Maze Generator and Solver
 
-An interactive visualization of maze generation using a "mouse eating walls" DFS algorithm and a backtracking solver with red/blue dot visualization.
+This project visualizes how a maze is generated and then solved automatically. It uses a stack-based depth-first search algorithm to create a proper maze and a backtracking solver to find a path from the left opening to the right opening.
 
-## 📋 Table of Contents
+## Overview
 
-- [Overview](#overview)
-- [Features](#features)
-- [Team Members](#team-members)
-- [How It Works](#how-it-works)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Controls](#controls)
-- [Algorithm Details](#algorithm-details)
-- [Project Structure](#project-structure)
-- [Technical Specifications](#technical-specifications)
-- [Bonus Features](#bonus-features)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
+The program builds a rectangular maze of `R` rows and `C` columns. Each cell stores whether its north wall and east wall still exist, which matches the wall representation described in the assignment.
 
-## 🎯 Overview
+By default, the maze is a proper maze:
 
-This project generates **perfect mazes** (unique path between any two cells) using a stack-based DFS algorithm where a virtual "mouse" eats through walls to connect cells. The solver then finds a path from start to end using backtracking, visually marking the path with **red dots** and dead ends with **blue dots**.
+- every cell is reachable
+- there is a unique path between any two cells
+- the entrance is on the left edge
+- the exit is on the right edge
 
-## ✨ Features
+After the maze is generated, the program solves it visually. The current search path is shown in red, dead ends are marked in blue, and the final successful route remains visible in green.
 
-- **Dynamic Maze Generation** - Watch the mouse eat through walls in real-time
-- **Multiple Difficulty Levels** - Easy, Medium, Hard, and Expert presets
-- **Cycle Creation** - Optional random walls eaten (1 in 20 chance) to create cycles
-- **Interior Start/End** - Configurable placement (edges or interior cells)
-- **Visual Solver** - Red dots show current path, blue dots mark dead ends
-- **Adjustable Animation Speed** - Control generation and solving speeds
-- **Keyboard Controls** - Reset, solve, quit at any time
+## Features
 
-## 👥 Team Members & Responsibilities
+- Dynamic maze generation with a visible "mouse" eating through walls
+- Stack-based DFS maze construction
+- Backtracking maze solver
+- Left-edge to right-edge path by default
+- Optional harder modes with extra cycles
+- Difficulty presets in code for different maze sizes and speeds
+- Keyboard controls for solving, resetting, and quitting
 
-| Member       | Module              | Responsibilities                                                     |
-| ------------ | ------------------- | -------------------------------------------------------------------- |
-| **Person 1** | `main.py`           | Game loop, state management, event handling, integration             |
-| **Person 2** | `maze_generator.py` | DFS algorithm, wall eating logic, stack backtracking, cycle creation |
-| **Person 3** | `maze_solver.py`    | Backtracking solver, pathfinding, dead end detection                 |
-| **Person 4** | `maze_renderer.py`  | Graphics, drawing walls/cells, animations, colors                    |
-| **Person 5** | `maze_config.py`    | Configuration, constants, difficulty levels, utilities               |
+## How It Works
 
-## 🧠 How It Works
+The program generates and displays a rectangular maze, then solves it automatically from the left-edge entrance to the right-edge exit. It uses random generation to create a proper maze and backtracking to show the search process and the final path.
 
-### Maze Generation (The Mouse Algorithm)
+### Maze Representation
 
-1. **Start** with all walls intact (complete grid)
-2. **Place mouse** in random starting cell
-3. **Find unvisited neighbors** - cells with all 4 walls still intact
-4. **Choose randomly** and eat through the connecting wall
-5. **Push other candidates** onto a stack for later
-6. **Repeat** until mouse reaches dead end
-7. **Backtrack** by popping stack to find unvisited cells
-8. **Finish** when all cells are visited (stack empty)
+The maze is stored using two wall arrays:
 
-### Maze Solving (Backtracking)
+- `north_wall[row][col]`
+- `east_wall[row][col]`
 
-1. **Start** at green start circle
-2. **Check all 4 directions** for open walls
-3. **Move randomly** to unvisited cell (red dot)
-4. **Push position** onto solution stack
-5. **When stuck** (dead end):
-   - Mark cell blue
-   - Pop stack to backtrack
-6. **Continue** until reaching green end circle
+If a value is `1`, the wall is present. If it is `0`, the wall has been removed.
 
-## 💻 Installation
+### Maze Generation
 
-### Prerequisites
+The generator follows the "mouse eats walls" idea from the assignment:
+
+1. Start with all walls intact.
+2. Place the mouse in a random cell.
+3. Check neighboring cells that have not been visited.
+4. Randomly choose one unvisited neighbor.
+5. Remove the wall between the current cell and that neighbor.
+6. Push the path onto a stack and continue.
+7. When the mouse reaches a dead end, pop the stack and backtrack.
+8. Stop when all cells have been visited.
+
+Because each new cell is connected only once during generation, the result is a proper maze with a unique path structure.
+
+### Maze Solving
+
+The solver uses backtracking:
+
+1. Start at the left-edge opening.
+2. Check all possible moves where no wall blocks movement.
+3. Move to an unvisited neighbor and push it onto the solution stack.
+4. If a dead end is reached, pop the stack and backtrack.
+5. Continue until the right-edge exit is found.
+
+This process is shown visually:
+
+- red: current explored path
+- blue: dead ends
+- green: final solution
+
+## Controls
+
+- `SPACE`: start solving after maze generation finishes
+- `R`: generate a new maze
+- `ESC`: quit the program
+
+## Project Structure
+
+- `main.py`: game loop and state management
+- `maze_generator.py`: random maze generation logic
+- `maze_solver.py`: backtracking solver
+- `maze_renderer.py`: drawing and animation
+- `maze_config.py`: colors, sizes, difficulty presets, and settings
+
+## Installation and Running
+
+### Requirements
 
 - Python 3.8 or higher
-- pip package manager
+- `pygame`
 
-### Step-by-Step Setup
+### Setup
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/maze-project.git
-cd maze-project
-
-# 2. Create virtual environment
 python -m venv venv
+```
 
-# 3. Activate virtual environment
-# Windows:
+Activate the virtual environment:
+
+```bash
+.\venv\Scripts\Activate.ps1
+```
+
+If you are using Command Prompt instead of PowerShell:
+
+```bash
 venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
+```
 
-# 4. Install dependencies
-pip install -r requirements.txt
+Install `pygame`:
 
-# 5. Run the program
+```bash
+pip install pygame
+```
+
+Run the program:
+
+```bash
 python main.py
 ```
+
+If you want to run it directly with the project virtual environment on Windows:
+
+```bash
+.\venv\Scripts\python.exe main.py
+```
+
+## Notes
+
+- Higher difficulty levels can optionally add extra broken walls to create cycles.
+- Those cycle-enabled modes are bonus behavior beyond the base proper-maze requirement.
