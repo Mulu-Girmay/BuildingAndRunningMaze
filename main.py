@@ -1,8 +1,3 @@
-"""
-PERSON 1: Game Loop & Integration
-Responsibilities: Main loop, event handling, state management
-Dependencies: All other modules
-"""
 
 import pygame
 import sys

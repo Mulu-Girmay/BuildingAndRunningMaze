@@ -2,7 +2,7 @@ import pygame
 from maze_config import Colors
 
 class MazeRenderer:
-    def init(self, config):
+    def __init__(self, config):
         self.config = config
         self.cell_size = config.cell_size
         

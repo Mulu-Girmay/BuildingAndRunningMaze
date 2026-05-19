@@ -49,11 +49,10 @@ class Difficulty:
         'enable_cycles': True,
         'cycle_probability': 0.10  # More cycles
     }
-    class MazeConfig:
-        def __init__(self, difficulty='MEDIUM'):
-            self.set_difficulty(difficulty)
-        
-        
+
+class MazeConfig:
+    def __init__(self, difficulty='MEDIUM'):
+        self.set_difficulty(difficulty)
         self.start_end_type = 'interior'  # 'edges' or 'interior'  
         self.solver_strategy = 'random'  # 'random', 'prefer_right', 'prefer_left'      
         self.show_instructions = True
@@ -78,7 +77,6 @@ class Difficulty:
         self.enable_cycles = settings['enable_cycles']
         self.cycle_probability = settings['cycle_probability']
         
-      
         self.screen_width = self.cols * self.cell_size + 10
         self.screen_height = self.rows * self.cell_size + 10
         self.idle_speed = 60
