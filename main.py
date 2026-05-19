@@ -74,9 +74,63 @@ class MazeGame:
         self.path_history = []
         self.solver_generator = self.solver.solve()
     
+    def update_generation(self):
+        """Update maze generation phase"""
+        try:
+            self.mouse_pos = next(self.generator.generate())
+            self.renderer.draw_generation(
+                self.screen, self.maze, self.mouse_pos
+            )
+            self.clock.tick(self.config.gen_speed)
+        except StopIteration:
+            self.state = 'IDLE'
+            self.renderer.draw_idle(self.screen, self.maze)
+            print("Maze generation complete! Press SPACE to solve")
+    
+    def update_solving(self):
+        """Update maze solving phase"""
+        try:
+            action, row, col = next(self.solver_generator)
+            
+            if action == 'move':
+                self.path_history.append((row, col))
+                self.solver_state = [
+                    (pos, Colors.RED) for pos in self.path_history[-30:]
+                ]
+            elif action == 'dead_end':
+                self.solver_state.append(((row, col), Colors.BLUE))
+            elif action == 'success':
+                self.solver_state = [(pos, Colors.GREEN) for pos in self.path_history]
+                print("✓ MAZE SOLVED! Press R for new maze, ESC to quit")
+                self.state = 'COMPLETE'
+            
+            self.renderer.draw_solving(
+                self.screen, self.maze, self.solver_state
+            )
+            self.clock.tick(self.config.solve_speed)
+            
+        except StopIteration:
+            if self.state == 'SOLVING':
+                print("✗ No solution found! Press R for new maze")
+                self.state = 'IDLE'
+    
     def run(self):
-        """Main game loop"""
-        pass  # Will be implemented in Commit 4
+        """Main game loop with state machine"""
+        self.initialize_maze()
+        
+        while self.running:
+            self.handle_events()
+            
+            if self.state == 'GENERATING':
+                self.update_generation()
+            elif self.state == 'SOLVING':
+                self.update_solving()
+            elif self.state in ['IDLE', 'COMPLETE']:
+                self.renderer.draw_idle(self.screen, self.maze)
+                self.clock.tick(self.config.idle_speed)
+        
+        pygame.quit()
+        sys.exit()
 
 if __name__ == "__main__":
     game = MazeGame()
