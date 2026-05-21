@@ -26,17 +26,38 @@ class MazeRenderer:
         pygame.display.flip()
     
     def draw_solving(self, screen, maze_data, solver_state):
-        """Draw maze during solving phase (red/blue dots)"""
+        """Draw maze during solving phase (red/blue/green dots)"""
         self._draw_maze_base(screen, maze_data)
         
-        # Draw solver state (red/blue dots)
+        # Draw solver state in layers so dead ends remain visible.
         if solver_state:
-            for (row, col), color in solver_state:
-                self._draw_circle(
-                    screen, row, col, 
-                    color, 
-                    self.config.cell_size // 3
-                )
+            if isinstance(solver_state, dict):
+                for row, col in solver_state.get("active_path", []):
+                    self._draw_circle(
+                        screen, row, col,
+                        Colors.RED,
+                        self.config.cell_size // 3,
+                    )
+
+                for row, col in solver_state.get("solution_path", []):
+                    self._draw_circle(
+                        screen, row, col,
+                        Colors.GREEN,
+                        self.config.cell_size // 3,
+                    )
+
+                for row, col in solver_state.get("dead_ends", []):
+                    self._draw_dead_end_marker(screen, row, col)
+            else:
+                for (row, col), color in solver_state:
+                    if color == Colors.BLUE:
+                        self._draw_dead_end_marker(screen, row, col)
+                    else:
+                        self._draw_circle(
+                            screen, row, col,
+                            color,
+                            self.config.cell_size // 3
+                        )
         
         pygame.display.flip()
     
@@ -122,6 +143,27 @@ class MazeRenderer:
         center_x = col * cs + cs // 2
         center_y = row * cs + cs // 2
         pygame.draw.circle(screen, color, (center_x, center_y), radius)
+
+    def _draw_dead_end_marker(self, screen, row, col):
+        """Draw a more visible blue marker for dead ends."""
+        cs = self.cell_size
+        center_x = col * cs + cs // 2
+        center_y = row * cs + cs // 2
+        outer_radius = max(6, cs // 2 - 3)
+        inner_radius = max(3, outer_radius - 4)
+
+        pygame.draw.circle(
+            screen,
+            Colors.WHITE,
+            (center_x, center_y),
+            outer_radius,
+        )
+        pygame.draw.circle(
+            screen,
+            Colors.BLUE,
+            (center_x, center_y),
+            inner_radius,
+        )
     
     def draw_text(self, screen, text, x, y, color=Colors.WHITE):
         """Draw text overlay (for instructions)"""

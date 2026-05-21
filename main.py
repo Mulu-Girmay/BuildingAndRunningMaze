@@ -19,10 +19,14 @@ class MazeGame:
         self.solver_generator = None
 
         # Game state
-        self.state = "GENERATING"  # GENERATING, SOLVING, IDLE, COMPLETE
+        self.state = "GENERATING"  
         self.maze = None
         self.mouse_pos = None
-        self.solver_state = []
+        self.solver_state = {
+            "active_path": [],
+            "dead_ends": [],
+            "solution_path": [],
+        }
         self.dead_end_cells = []
 
         # Pygame setup
@@ -49,7 +53,11 @@ class MazeGame:
         self.maze = self.generator.get_maze()
         self.state = "GENERATING"
         self.mouse_pos = None
-        self.solver_state = []
+        self.solver_state = {
+            "active_path": [],
+            "dead_ends": [],
+            "solution_path": [],
+        }
         self.dead_end_cells = []
 
     def handle_events(self):
@@ -71,9 +79,11 @@ class MazeGame:
         self.state = "SOLVING"
         self.solver.load_maze(self.maze)
         self.dead_end_cells = []
-        self.solver_state = (
-            [(self.maze["start"], Colors.RED)] if self.maze["start"] else []
-        )
+        self.solver_state = {
+            "active_path": ([self.maze["start"]] if self.maze["start"] else []),
+            "dead_ends": [],
+            "solution_path": [],
+        }
         self.solver_generator = self.solver.solve()
 
     def update_generation(self):
@@ -97,12 +107,14 @@ class MazeGame:
             action, row, col = next(self.solver_generator)
 
             if action == "move":
-                self.solver_state = self._build_solver_state(Colors.RED)
+                self.solver_state["active_path"] = list(self.solver.solution_stack)
             elif action == "dead_end":
                 self.dead_end_cells.append((row, col))
-                self.solver_state = self._build_solver_state(Colors.RED)
+                self.solver_state["dead_ends"] = list(self.dead_end_cells)
+                self.solver_state["active_path"] = list(self.solver.solution_stack)
             elif action == "success":
-                self.solver_state = self._build_solver_state(Colors.GREEN)
+                self.solver_state["solution_path"] = list(self.solver.solution_stack)
+                self.solver_state["dead_ends"] = list(self.dead_end_cells)
                 print("Maze solved! Press R for new maze, ESC to quit")
                 self.state = "COMPLETE"
 
@@ -115,14 +127,6 @@ class MazeGame:
             if self.state == "SOLVING":
                 print("No solution found! Press R for new maze")
                 self.state = "IDLE"
-
-    def _build_solver_state(self, active_color):
-        """Compose the active path together with confirmed dead ends."""
-        solver_state = [((row, col), Colors.BLUE) for row, col in self.dead_end_cells]
-        solver_state.extend(
-            (position, active_color) for position in self.solver.solution_stack
-        )
-        return solver_state
 
     def run(self):
         """Main game loop with state machine."""
