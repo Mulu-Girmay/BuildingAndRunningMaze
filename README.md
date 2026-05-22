@@ -130,3 +130,7 @@ If you want to run it directly with the project virtual environment on Windows:
 
 - Higher difficulty levels can optionally add extra broken walls to create cycles.
 - Those cycle-enabled modes are bonus behavior beyond the base proper-maze requirement.
+
+## Link for Demo Video
+
+https://www.loom.com/share/01b960faa87a49a3b25df9160facf725
