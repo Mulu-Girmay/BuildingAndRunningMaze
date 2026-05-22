@@ -6,7 +6,6 @@ class MazeRenderer:
         self.config = config
         self.cell_size = config.cell_size
         
-        # Cache for performance optimization
         self._wall_cache = {}
         self._dirty = True
     
@@ -14,7 +13,6 @@ class MazeRenderer:
         """Draw maze during generation phase (with mouse)"""
         self._draw_maze_base(screen, maze_data)
         
-        # Draw mouse (red dot)
         if mouse_pos:
             self._draw_circle(
                 screen, 
@@ -29,7 +27,6 @@ class MazeRenderer:
         """Draw maze during solving phase (red/blue/green dots)"""
         self._draw_maze_base(screen, maze_data)
         
-        # Draw solver state in layers so dead ends remain visible.
         if solver_state:
             if isinstance(solver_state, dict):
                 for row, col in solver_state.get("active_path", []):
@@ -62,12 +59,10 @@ class MazeRenderer:
         pygame.display.flip()
     
     def draw_idle(self, screen, maze_data):
-        """Draw maze in idle state (no mouse, no solver)"""
         self._draw_maze_base(screen, maze_data)
         pygame.display.flip()
     
     def _draw_maze_base(self, screen, maze_data):
-        """Draw the complete maze structure (walls and start/end)"""
         north_wall = maze_data['north_wall']
         east_wall = maze_data['east_wall']
         rows = maze_data['rows']
@@ -79,7 +74,6 @@ class MazeRenderer:
         screen.fill(Colors.BLACK)
         cs = self.cell_size
         
-        # Draw all cells (optimized with minimal operations)
         for row in range(rows):
             for col in range(cols):
                 x = col * cs
@@ -108,7 +102,7 @@ class MazeRenderer:
                         (x + cs, y), (x + cs, y + cs), 2
                     )
                 
-                # Draw west wall (left edge of maze)
+                # Draw west wall
                 draw_west_wall = col == 0
                 if (
                     start_end_type == 'edges'
@@ -124,14 +118,13 @@ class MazeRenderer:
                         (x, y), (x, y + cs), 2
                     )
                 
-                # Draw south wall (bottom edge of maze)
+                # Draw south wall 
                 if row == rows - 1:
                     pygame.draw.line(
                         screen, Colors.WHITE,
                         (x, y + cs), (x + cs, y + cs), 2
                     )
         
-        # Draw start and end (green circles)
         if start:
             self._draw_circle(screen, start[0], start[1], Colors.GREEN, cs // 3)
         if end:

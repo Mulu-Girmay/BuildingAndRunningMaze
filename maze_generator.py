@@ -64,10 +64,10 @@ class MazeGenerator:
             
             yield (current_row, current_col)
         
-        # Choose start and end positions
+       
         self._choose_start_end()
         
-        # BONUS: Add cycles (1 in 20 chance)
+       
         if self.config.enable_cycles:
             self._add_cycles(probability=self.config.cycle_probability)
     
@@ -75,19 +75,19 @@ class MazeGenerator:
         """Find all adjacent cells that haven't been visited"""
         neighbors = []
         
-        # Check North (up)
+       
         if row > 0 and not self.visited[row - 1][col]:
             neighbors.append((row - 1, col, 'north'))
         
-        # Check South (down)
+       
         if row < self.rows - 1 and not self.visited[row + 1][col]:
             neighbors.append((row + 1, col, 'south'))
         
-        # Check West (left)
+       
         if col > 0 and not self.visited[row][col - 1]:
             neighbors.append((row, col - 1, 'west'))
         
-        # Check East (right)
+      
         if col < self.cols - 1 and not self.visited[row][col + 1]:
             neighbors.append((row, col + 1, 'east'))
         
@@ -99,23 +99,20 @@ class MazeGenerator:
         The mouse removes the barrier!
         """
         if direction == 'north':
-            self.north_wall[r1][c1] = 0  # Remove north wall of current
+            self.north_wall[r1][c1] = 0
         elif direction == 'south':
-            self.north_wall[r2][c2] = 0  # Remove north wall of neighbor
+            self.north_wall[r2][c2] = 0
         elif direction == 'west':
-            self.east_wall[r1][c1 - 1] = 0  # Remove east wall of left cell
-        elif direction == 'east':
-            self.east_wall[r1][c1] = 0  # Remove east wall of current
+            self.east_wall[r1][c1 - 1] = 0
+            self.east_wall[r1][c1] = 0
     
     def _choose_start_end(self):
         """Choose start and end positions (can be interior or edges)"""
         if self.config.start_end_type == 'edges':
-            # Classic assignment mode: left edge to right edge.
             self.start = (random.randint(0, self.rows - 1), 0)
             self.end = (random.randint(0, self.rows - 1), self.cols - 1)
         
         elif self.config.start_end_type == 'interior':
-            # Challenging: Both inside the maze
             self.start = (
                 random.randint(1, self.rows - 2),
                 random.randint(1, self.cols - 2)
@@ -125,25 +122,21 @@ class MazeGenerator:
                 random.randint(1, self.cols - 2)
             )
             
-            # Ensure start != end
             while self.start == self.end:
                 self.end = (
                     random.randint(1, self.rows - 2),
                     random.randint(1, self.cols - 2)
                 )
             
-            # Create openings for interior cells
             self._create_openings_at_start_end()
     
     def _create_openings_at_start_end(self):
         """Break walls to allow entry/exit from interior positions"""
         directions = ['north', 'south', 'east', 'west']
         
-        # For start
         for direction in random.sample(directions, 1):
             self._break_wall_at(self.start[0], self.start[1], direction)
         
-        # For end
         for direction in random.sample(directions, 1):
             self._break_wall_at(self.end[0], self.end[1], direction)
     
@@ -168,11 +161,11 @@ class MazeGenerator:
         for row in range(self.rows):
             for col in range(self.cols):
                 if random.random() < probability:
-                    # Try to eat north wall
+                    
                     if row > 0 and self.north_wall[row][col] == 1:
                         self.north_wall[row][col] = 0
                         cycles_created += 1
-                    # Try to eat east wall
+                    
                     elif col < self.cols - 1 and self.east_wall[row][col] == 1:
                         self.east_wall[row][col] = 0
                         cycles_created += 1

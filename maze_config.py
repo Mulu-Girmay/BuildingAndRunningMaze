@@ -14,8 +14,8 @@ class Difficulty:
         'rows': 10,
         'cols': 15,
         'cell_size': 40,
-        'gen_speed': 60,   # Fast generation
-        'solve_speed': 20,  # Slow solving
+        'gen_speed': 60,   
+        'solve_speed': 20,  
         'enable_cycles': False,
         'cycle_probability': 0.0
     }
@@ -36,7 +36,7 @@ class Difficulty:
         'cell_size': 25,
         'gen_speed': 20,
         'solve_speed': 10,
-        'enable_cycles': True,  # Cycles make it harder!
+        'enable_cycles': True,  
         'cycle_probability': 0.05
     }
     
@@ -47,14 +47,14 @@ class Difficulty:
         'gen_speed': 15,
         'solve_speed': 8,
         'enable_cycles': True,
-        'cycle_probability': 0.10  # More cycles
+        'cycle_probability': 0.10 
     }
 
 class MazeConfig:
     def __init__(self, difficulty='MEDIUM'):
         self.set_difficulty(difficulty)
-        self.start_end_type = 'edges'  # 'edges' or 'interior'
-        self.solver_strategy = 'random'  # 'random', 'prefer_right', 'prefer_left'      
+        self.start_end_type = 'edges' 
+        self.solver_strategy = 'random'     
         self.show_instructions = True
         self.animation_enabled = True
     
